@@ -3,10 +3,12 @@ import "./App.css";
 import { Card, CardContent } from "@material-ui/core";
 import axios from "axios";
 
-// import components
+// import components and files
 import Header from "./components/Header";
 import InfoBox from "./components/InfoBox";
 import Map from "./components/Map";
+import Table from "./components/Table";
+import { sortData } from "./util";
 
 // end point fetch countries: https://disease.sh/v3/covid-19/all
 // end point fetch countries: https://disease.sh/v3/covid-19/countries
@@ -15,6 +17,7 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
 
   // fetch to display worldwide data by default
   useEffect(() => {
@@ -23,7 +26,7 @@ function App() {
     });
   }, []);
 
-  // fetch to map all countries --> dropdown menu
+  // fetch to map all countries --> dropdown menu, table
   useEffect(() => {
     const getCountriesData = async () => {
       await axios
@@ -34,7 +37,11 @@ function App() {
             name: c.country,
             value: c.countryInfo.iso2,
           }));
+
           setCountries(countries);
+
+          const sortedData = sortData(data);
+          setTableData(sortedData);
         });
     };
 
@@ -90,6 +97,7 @@ function App() {
       <Card className="app__rightContainer">
         <CardContent>
           <h3>Live Cases by Country</h3>
+          <Table countriesData={tableData} />
           <h3>Worldwide new Cases</h3>
         </CardContent>
       </Card>
