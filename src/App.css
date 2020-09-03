@@ -4,6 +4,7 @@
 
 body {
   background-color: #f5f6fa;
+  padding: 10px;
 }
 
 .app {
@@ -16,6 +17,10 @@ body {
   justify-content: space-between;
 }
 
+.app__graphTitle {
+  margin-top: 20px;
+}
+
 /* min Tablet width */
 @media (min-width: 760px) {
   .app {
@@ -26,5 +31,24 @@ body {
 
   .app__leftContainer {
     flex: 0.9;
+  }
+
+  .app__rightContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app__rightContainer .MuiCardContent-root {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .app__graph {
+    flex-grow: 1;
+    padding-top: 30px;
+  }
+
+  .app__graphTitle {
+    margin-top: 40px;
   }
 }

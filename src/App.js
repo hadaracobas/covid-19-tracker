@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Card, CardContent } from "@material-ui/core";
 import axios from "axios";
+import "leaflet/dist/leaflet.css";
 
 // import components and files
 import Header from "./components/Header";
@@ -10,6 +11,7 @@ import Map from "./components/Map";
 import Table from "./components/Table";
 import LineGraph from "./components/LineGraph";
 import { sortData } from "./util";
+import { prettyPrintStat } from "./util";
 
 // end point fetch countries: https://disease.sh/v3/covid-19/all
 // end point fetch countries: https://disease.sh/v3/covid-19/countries
@@ -19,6 +21,10 @@ function App() {
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapZoom, setMapZoom] = useState(3);
+  const [mapCountries, setMapCountries] = useState([]);
+  const [casesType, setCasesType] = useState("cases");
 
   // fetch to display worldwide data by default
   useEffect(() => {
@@ -40,9 +46,9 @@ function App() {
           }));
 
           setCountries(countries);
-
           const sortedData = sortData(data);
           setTableData(sortedData);
+          setMapCountries(data);
         });
     };
 
@@ -52,7 +58,6 @@ function App() {
   // fetch when user change country data
   const onChangeCountry = async (e) => {
     const countryCode = e.target.value;
-    setCountry(countryCode);
 
     const url =
       countryCode === "worldwide"
@@ -60,7 +65,18 @@ function App() {
         : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
 
     await axios.get(url).then((res) => {
+      setCountry(countryCode);
       setCountryInfo(res.data);
+
+      if (countryCode === "worldwide") {
+        setMapCenter({ lat: 34.80746, lng: -40.4796 });
+      } else {
+        setMapCenter({
+          lat: res.data.countryInfo.lat,
+          lng: res.data.countryInfo.long,
+        });
+      }
+      setMapZoom(4);
     });
   };
 
@@ -75,30 +91,43 @@ function App() {
 
         <div className="app__stats">
           <InfoBox
+            isRed
+            active={casesType === "cases"}
+            onClick={(e) => setCasesType("cases")}
             title="Coronavirus Cases"
-            cases={countryInfo.todayCases}
-            total={countryInfo.cases}
+            cases={prettyPrintStat(countryInfo.todayCases)}
+            total={prettyPrintStat(countryInfo.cases)}
           />
           <InfoBox
+            active={casesType === "recovered"}
+            onClick={(e) => setCasesType("recovered")}
             title="Recovered"
-            cases={countryInfo.todayRecovered}
-            total={countryInfo.recovered}
+            cases={prettyPrintStat(countryInfo.todayRecovered)}
+            total={prettyPrintStat(countryInfo.recovered)}
           />
           <InfoBox
+            isRed
+            active={casesType === "deaths"}
+            onClick={(e) => setCasesType("deaths")}
             title="Deaths"
-            cases={countryInfo.todayDeaths}
-            total={countryInfo.deaths}
+            cases={prettyPrintStat(countryInfo.todayDeaths)}
+            total={prettyPrintStat(countryInfo.deaths)}
           />
         </div>
 
-        <Map />
+        <Map
+          casesType={casesType}
+          center={mapCenter}
+          zoom={mapZoom}
+          countries={mapCountries}
+        />
       </div>
       <Card className="app__rightContainer">
         <CardContent>
           <h3>Live Cases by Country</h3>
           <Table countriesData={tableData} />
-          <h3>Worldwide new Cases</h3>
-          <LineGraph />
+          <h3 className="app__graphTitle">Worldwide new {casesType}</h3>
+          <LineGraph className="app__graph" casesType={casesType} />
         </CardContent>
       </Card>
     </div>
