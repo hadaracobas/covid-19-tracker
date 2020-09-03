@@ -4,8 +4,8 @@ import "./index.css";
 function Table({ countriesData }) {
   return (
     <div className="table">
-      {countriesData.map((c) => (
-        <tr>
+      {countriesData.map((c, index) => (
+        <tr key={index}>
           <td>{c.country}</td>
           <td>
             <strong>{c.cases}</strong>

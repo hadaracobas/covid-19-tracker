@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import InfoBox from "./components/InfoBox";
 import Map from "./components/Map";
 import Table from "./components/Table";
+import LineGraph from "./components/LineGraph";
 import { sortData } from "./util";
 
 // end point fetch countries: https://disease.sh/v3/covid-19/all
@@ -63,8 +64,6 @@ function App() {
     });
   };
 
-  console.log("COUNTRY INFO --->", countryInfo);
-
   return (
     <div className="app">
       <div className="app__leftContainer">
@@ -99,6 +98,7 @@ function App() {
           <h3>Live Cases by Country</h3>
           <Table countriesData={tableData} />
           <h3>Worldwide new Cases</h3>
+          <LineGraph />
         </CardContent>
       </Card>
     </div>
