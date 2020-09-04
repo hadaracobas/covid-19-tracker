@@ -1,3 +1,18 @@
+## COVID-19 Tracker
+https://covid-19-tracker-8dd72.web.app
+
+The purpose of this project: a private project I built to improve my coding skills
+
+Few points about this project:
+* Technology: React.js
+* Components: Header, InfoBox, LineGraph, Map, Table, App (function components)
+* State: hooks
+* API: disease.sh  (Open Disease Data)
+* Design: responsive, clean and simple design in order to make it easy for the user to get different data about the COVID-19 in the world. 
+* Deploy: firebase
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
